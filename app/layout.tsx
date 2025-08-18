@@ -41,7 +41,7 @@ export default function RootLayout({
               <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
             </div>
 
-            <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4">
+            <div className="relative z-10 flex h-full w-full flex-col items-center justify-center">
               <ThemeProvider>
                 <OrganizationProvider>
                   <Suspense fallback={<ProgressBarFallback />}>
