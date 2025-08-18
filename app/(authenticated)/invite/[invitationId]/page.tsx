@@ -1,8 +1,10 @@
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { getInvitation } from '@/lib/invitations';
 import { getOrganizationById } from '@/lib/organizations';
 import { InvitePage } from '@/components/invite/invite-page';
+import { InviteFallback } from '@/components/ui/loading-states';
 
 export default async function InvitePageServer({
   params,
@@ -66,10 +68,12 @@ export default async function InvitePageServer({
     }
 
     return (
-      <InvitePage 
-        invitation={invitation}
-        organization={organization}
-      />
+      <Suspense fallback={<InviteFallback />}>
+        <InvitePage 
+          invitation={invitation}
+          organization={organization}
+        />
+      </Suspense>
     );
   } catch (error) {
     console.error('Error loading invitation:', error);

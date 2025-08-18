@@ -2,12 +2,14 @@ import { auth } from '@/lib/auth';
 import { currentUser } from '@clerk/nextjs/server';
 import { getUserOrganizations } from '@/lib/organizations';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { DTRContent } from '@/components/dtr/dtr-content';
 import { 
   getActiveTimeEntry, 
   getTodayTimeEntries, 
   isUserClockedIn,
 } from '@/lib/time-entries';
+import { DTRFallback } from '@/components/ui/loading-states';
 
 import type { TimeEntryWithDuration} from '@/lib/time-entries-types'
 
@@ -49,10 +51,12 @@ export default async function DTRPage() {
   const { activeEntry, todayEntries, isClockedIn } = await getDTRData(userId, orgId);
 
   return (
-    <DTRContent
-      initialActiveEntry={activeEntry as TimeEntryWithDuration}
-      initialTodayEntries={todayEntries}
-      initialIsClockedIn={isClockedIn}
-    />
+    <Suspense fallback={<DTRFallback />}>
+      <DTRContent
+        initialActiveEntry={activeEntry as TimeEntryWithDuration}
+        initialTodayEntries={todayEntries}
+        initialIsClockedIn={isClockedIn}
+      />
+    </Suspense>
   );
 }

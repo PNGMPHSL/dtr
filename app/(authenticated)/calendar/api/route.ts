@@ -16,10 +16,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Month parameter is required' }, { status: 400 });
     }
     
-    // Calculate start and end of month
-    const startDate = `${month}-01`;
-    const endDate = new Date(new Date(startDate).getFullYear(), new Date(startDate).getMonth() + 1, 0)
-      .toISOString().slice(0, 10);
+    // Parse the month parameter and calculate start and end of month
+    const [year, monthNum] = month.split('-').map(Number);
+    if (!year || !monthNum || monthNum < 1 || monthNum > 12) {
+      return NextResponse.json({ error: 'Invalid month format' }, { status: 400 });
+    }
+    
+    // Calculate start and end of month using proper date arithmetic
+    const startDate = `${year}-${monthNum.toString().padStart(2, '0')}-01`;
+    
+    // Get the last day of the month by going to the first day of next month and subtracting 1 day
+    const lastDay = new Date(year, monthNum, 0).getDate();
+    const endDate = `${year}-${monthNum.toString().padStart(2, '0')}-${lastDay.toString().padStart(2, '0')}`;
     
     const records = await db.select().from(timeEntries)
       .where(and(

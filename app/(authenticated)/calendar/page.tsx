@@ -1,12 +1,12 @@
 "use client";
 import { useUser } from '@clerk/nextjs';
 import { useOrganizationContext } from '@/lib/contexts/organization-context';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from 'date-fns';
 import { formatTimeOnly } from '@/lib/time-format';
 import { OrganizationSwitcher } from '@/components/ui/organization-switcher';
 
@@ -63,11 +63,34 @@ export default function CalendarPage() {
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
-  const calendarDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  
+  // Get the start of the week for the first day of the month
+  const calendarStart = useMemo(() => {
+    const start = new Date(monthStart);
+    start.setDate(start.getDate() - monthStart.getDay());
+    return start;
+  }, [monthStart]);
+  
+  // Get the end of the week for the last day of the month
+  const calendarEnd = useMemo(() => {
+    const end = new Date(monthEnd);
+    end.setDate(end.getDate() + (6 - monthEnd.getDay()));
+    return end;
+  }, [monthEnd]);
+  
+  const calendarDays = useMemo(() => 
+    eachDayOfInterval({ start: calendarStart, end: calendarEnd }), 
+    [calendarStart, calendarEnd]
+  );
 
   const getRecordForDate = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     return records.find(record => record.date === dateStr);
+  };
+
+  const isCurrentDay = (date: Date) => {
+    const today = new Date();
+    return format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd');
   };
 
   const getStatusColor = (record?: CalendarRecord) => {
@@ -151,7 +174,7 @@ export default function CalendarPage() {
             {/* Calendar days */}
             {calendarDays.map(day => {
               const isCurrentMonth = isSameMonth(day, currentDate);
-              const isToday = isSameDay(day, new Date());
+              const isToday = isCurrentDay(day);
               const record = getRecordForDate(day);
               
               return (

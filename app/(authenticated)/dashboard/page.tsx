@@ -1,6 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { DashboardClient } from '@/components/dashboard/dashboard-client';
 import { RecentActivity } from '@/components/dashboard/recent-activity';
@@ -10,6 +11,10 @@ import { getUserDisplayName } from '@/lib/user-utils';
 import { getActiveTimeEntry, getTimeEntriesForRange, isUserClockedIn } from '@/lib/time-entries';
 import { calculateTotalDuration, formatDuration } from '@/lib/time-entries-format';
 import type { TimeEntryWithDuration } from '@/lib/time-entries-types';
+import { 
+  DashboardFallback, 
+  OrganizationSwitcherFallback 
+} from '@/components/ui/loading-states';
 
 async function getDashboardData(userId: string, orgId: string) {
   const today = getTodayDate();
@@ -116,34 +121,38 @@ export default async function DashboardPage() {
   const stats = calculateStats(todayEntries, activeEntry as TimeEntryWithDuration, isClockedIn, recentRecords);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, {getUserDisplayName(user)}!
-          </h1>
-          <p className="text-muted-foreground">
-            Here&apos;s your time tracking overview for today.
-          </p>
+    <Suspense fallback={<DashboardFallback />}>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">
+              Welcome back, {getUserDisplayName(user)}!
+            </h1>
+            <p className="text-muted-foreground">
+              Here&apos;s your time tracking overview for today.
+            </p>
+          </div>
+          <Suspense fallback={<OrganizationSwitcherFallback />}>
+            <OrganizationSwitcher variant="compact" />
+          </Suspense>
         </div>
-        <OrganizationSwitcher variant="compact" />
+
+        <StatsCards stats={stats} />
+
+        <DashboardClient
+          initialActiveEntry={activeEntry as TimeEntryWithDuration}
+          initialTodayEntries={todayEntries}
+          initialIsClockedIn={isClockedIn}
+        />
+        
+        <RecentActivity records={recentRecords.map(r => ({
+          date: r.date,
+          timeIn: r.timeIn,
+          timeOut: r.timeOut || undefined,
+          duration: r.duration,
+          message: r.note || undefined
+        }))} />
       </div>
-
-      <StatsCards stats={stats} />
-
-      <DashboardClient
-        initialActiveEntry={activeEntry as TimeEntryWithDuration}
-        initialTodayEntries={todayEntries}
-        initialIsClockedIn={isClockedIn}
-      />
-      
-      <RecentActivity records={recentRecords.map(r => ({
-        date: r.date,
-        timeIn: r.timeIn,
-        timeOut: r.timeOut || undefined,
-        duration: r.duration,
-        message: r.note || undefined
-      }))} />
-    </div>
+    </Suspense>
   );
 }
