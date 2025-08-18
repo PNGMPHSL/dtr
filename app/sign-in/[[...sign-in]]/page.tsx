@@ -25,7 +25,9 @@ export default function SignInPage() {
           </h1>
           <p className="text-gray-600">Sign in to your DTR System account</p>
         </div>
-        <SignIn forceRedirectUrl="/dashboard" />
+        <div className="flex justify-center">
+          <SignIn  forceRedirectUrl="/dashboard" />
+        </div>
       </div>
     </div>
   );

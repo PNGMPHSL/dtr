@@ -213,13 +213,13 @@ export function RealtimeTimeClock({
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
+          <div className="text-center">
             <span className="text-muted-foreground">Current Session:</span>
             <div className="font-medium text-foreground">
               {data.activeEntry ? formatTime(data.activeEntry.timeIn) : "-"}
             </div>
           </div>
-          <div>
+          <div className="text-center">
             <span className="text-muted-foreground">Session Time:</span>
             <div className="font-medium text-primary">
               {calculateLiveCurrentSessionHours()}

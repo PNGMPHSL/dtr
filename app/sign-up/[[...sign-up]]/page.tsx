@@ -27,7 +27,9 @@ export default function SignUpPage() {
             Join DTR System to start tracking time
           </p>
         </div>
-        <SignUp signInUrl="/sign-in" forceRedirectUrl="/dashboard" />
+        <div className="flex justify-center">
+          <SignUp signInUrl="/sign-in" forceRedirectUrl="/dashboard" />
+        </div>
       </div>
     </div>
   );
