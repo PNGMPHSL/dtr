@@ -10,7 +10,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <main className="max-w-4xl mx-auto text-center">
         <div className="mb-12">
           <div className="w-16 h-16 bg-gradient-to-r from-[#0369A1] to-[#059669] rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">

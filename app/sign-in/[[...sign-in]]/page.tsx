@@ -1,32 +1,21 @@
-import { SignIn } from '@clerk/nextjs';
-
+import { SignIn } from "@clerk/nextjs";
+import Image from "next/image";
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-[#0369A1] to-[#059669] rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8">
+            <Image
+              src="/images/logo.png"
+              alt="logo"
+              width={64}
+              height={64}
+            />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Welcome Back
-          </h1>
-          <p className="text-gray-600">Sign in to your DTR System account</p>
         </div>
         <div className="flex justify-center">
-          <SignIn  forceRedirectUrl="/dashboard" />
+          <SignIn signUpUrl="/sign-up" forceRedirectUrl="/dashboard" />
         </div>
       </div>
     </div>
