@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from '@clerk/nextjs/server';
+import Image from 'next/image';
 
 export default async function Home() {
   const { userId } = await auth();
@@ -13,10 +14,8 @@ export default async function Home() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <main className="max-w-4xl mx-auto text-center">
         <div className="mb-12">
-          <div className="w-16 h-16 bg-gradient-to-r from-[#0369A1] to-[#059669] rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+          <div className="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-8">
+            <Image src="/images/logo.png" alt="logo" width={96} height={96} />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             DTR System
