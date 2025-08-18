@@ -12,7 +12,7 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
     return (
       <>
         <SignedIn>
-          <div className="min-h-screen bg-background">
+          <div className="min-h-screen w-full bg-background">
             <Suspense fallback={<SidebarFallback />}>
               <Sidebar />
             </Suspense>

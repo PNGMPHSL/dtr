@@ -38,12 +38,10 @@ export default function RootLayout({
         >
           <div className="relative h-screen">
             <div className="absolute inset-0">
-              <div className="relative h-full w-full bg-red [&>div]:absolute [&>div]:h-full [&>div]:w-full [&>div]:bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [&>div]:[background-size:16px_16px] [&>div]:[mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]">
-                <div></div>
-              </div>
+              <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
             </div>
 
-            <div className="relative z-10 flex h-full flex-col items-center justify-center px-4">
+            <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-4">
               <ThemeProvider>
                 <OrganizationProvider>
                   <Suspense fallback={<ProgressBarFallback />}>
