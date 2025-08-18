@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Clock, Play, Square, MessageSquare } from 'lucide-react';
 import { formatDuration, calculateTotalDuration } from '@/lib/time-entries-format';
-import { formatTime, getCurrentTime, getCurrentDate } from '@/lib/time-format';
+import { formatTime } from '@/lib/time-format';
 import { toast } from 'sonner';
 import type { TimeEntryWithDuration } from '@/lib/time-entries-types';
 
@@ -23,7 +23,7 @@ export function RealtimeTimeClock({
   initialIsClockedIn,
   onTimeAction
 }: RealtimeTimeClockProps) {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [note, setNote] = useState('');
   const [data, setData] = useState({
@@ -34,8 +34,9 @@ export function RealtimeTimeClock({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Update current time every second
+  // Set initial time and update every second
   useEffect(() => {
+    setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -61,7 +62,7 @@ export function RealtimeTimeClock({
     let totalMinutes = calculateTotalDuration(data.todayEntries);
     
     // Add current session time if clocked in
-    if (data.activeEntry && isClockedIn) {
+    if (data.activeEntry && isClockedIn && currentTime) {
       const now = currentTime.getTime();
       const start = new Date(data.activeEntry.timeIn).getTime();
       totalMinutes += Math.round((now - start) / (1000 * 60));
@@ -71,7 +72,7 @@ export function RealtimeTimeClock({
   };
   
   const calculateLiveCurrentSessionHours = () => {
-    if (!data.activeEntry || !isClockedIn) return "0:00";
+    if (!data.activeEntry || !isClockedIn || !currentTime) return "0:00";
     
     const now = currentTime.getTime();
     const start = new Date(data.activeEntry.timeIn).getTime();
@@ -188,10 +189,20 @@ export function RealtimeTimeClock({
 
         <div className="text-center">
           <div className="text-3xl font-mono font-bold text-foreground">
-            {getCurrentTime()}
+            {currentTime ? currentTime.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true
+            }) : '--:--:--'}
           </div>
           <div className="text-sm text-muted-foreground">
-            {getCurrentDate()}
+            {currentTime ? currentTime.toLocaleDateString([], {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }) : 'Loading...'}
           </div>
         </div>
 
